@@ -1,0 +1,629 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary)}
+.cfg{max-width:900px;margin:0 auto;padding:1.5rem 1rem}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem}
+.brand-name{font-size:18px;font-weight:500;color:var(--color-text-primary);letter-spacing:.5px}
+.steps{display:flex;gap:0;margin-bottom:2rem;overflow-x:auto;border-bottom:1px solid var(--color-border-tertiary);padding-bottom:.75rem}
+.step-pill{display:flex;align-items:center;gap:6px;padding:4px 12px 4px 8px;font-size:12px;color:var(--color-text-tertiary);white-space:nowrap;cursor:pointer;border-radius:var(--border-radius-md);transition:all .2s}
+.step-pill.active{color:var(--color-text-primary);background:var(--color-background-secondary)}
+.step-pill.done{color:var(--color-text-success)}
+.step-num{width:20px;height:20px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.step-pill.done .step-num{background:var(--color-background-success);border-color:var(--color-border-success);color:var(--color-text-success)}
+.page{display:none}.page.active{display:block}
+.page-title{font-size:22px;font-weight:500;margin-bottom:1.5rem;color:var(--color-text-primary)}
+.grid-models{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}
+.model-card{border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;cursor:pointer;transition:all .2s;background:var(--color-background-primary)}
+.model-card:hover{border-color:var(--color-border-secondary)}
+.model-card.selected{border-color:#C0DD97;background:#EAF3DE}
+.model-img{width:100%;height:110px;object-fit:contain;margin-bottom:.75rem;border-radius:var(--border-radius-md);background:var(--color-background-secondary)}
+.model-img-placeholder{width:100%;height:110px;display:flex;align-items:center;justify-content:center;background:var(--color-background-secondary);border-radius:var(--border-radius-md);margin-bottom:.75rem}
+.car-svg{width:90px;height:50px}
+.model-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.model-type{font-size:11px;color:var(--color-text-secondary);margin:.2rem 0}
+.model-price{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-top:.5rem}
+.model-price span{font-size:11px;color:var(--color-text-secondary);font-weight:400}
+.moteur-grid{display:grid;gap:12px}
+.moteur-card{border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;cursor:pointer;transition:all .2s;background:var(--color-background-primary);display:grid;grid-template-columns:1fr auto}
+.moteur-card:hover{border-color:var(--color-border-secondary)}
+.moteur-card.selected{border-color:#C0DD97;background:#EAF3DE}
+.moteur-name{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.moteur-sub{font-size:12px;color:var(--color-text-secondary);margin-top:3px}
+.moteur-specs{display:flex;gap:16px;margin-top:.75rem;flex-wrap:wrap}
+.spec{font-size:12px;color:var(--color-text-secondary)}
+.spec strong{color:var(--color-text-primary);font-weight:500}
+.moteur-price{font-size:15px;font-weight:500;text-align:right;align-self:start;color:var(--color-text-primary)}
+.finition-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.finition-card{border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;cursor:pointer;transition:all .2s;background:var(--color-background-primary)}
+.finition-card:hover{border-color:var(--color-border-secondary)}
+.finition-card.selected{border-color:#C0DD97;background:#EAF3DE}
+.finition-name{font-size:14px;font-weight:500}
+.finition-price{font-size:14px;font-weight:500;margin-top:.5rem}
+.finition-features{margin-top:.75rem;display:flex;flex-direction:column;gap:4px}
+.feat{font-size:11px;color:var(--color-text-secondary);display:flex;align-items:center;gap:6px}
+.couleur-grid{display:flex;gap:12px;flex-wrap:wrap}
+.couleur-item{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}
+.couleur-circle{width:52px;height:52px;border-radius:50%;border:3px solid transparent;transition:all .2s;box-shadow:0 0 0 1.5px var(--color-border-tertiary)}
+.couleur-item.selected .couleur-circle{box-shadow:0 0 0 2.5px #639922}
+.couleur-label{font-size:11px;color:var(--color-text-secondary);text-align:center;max-width:60px}
+.couleur-badge{font-size:10px;color:var(--color-text-secondary);margin-top:-4px}
+.int-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.int-card{border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;cursor:pointer;transition:all .2s;background:var(--color-background-primary);text-align:center}
+.int-card:hover{border-color:var(--color-border-secondary)}
+.int-card.selected{border-color:#C0DD97;background:#EAF3DE}
+.int-preview{width:100%;height:70px;border-radius:var(--border-radius-md);margin-bottom:.75rem;display:flex;align-items:center;justify-content:center;font-size:28px}
+.int-name{font-size:13px;font-weight:500}
+.int-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.jantes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.jante-card{border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;cursor:pointer;transition:all .2s;background:var(--color-background-primary);text-align:center}
+.jante-card:hover{border-color:var(--color-border-secondary)}
+.jante-card.selected{border-color:#C0DD97;background:#EAF3DE}
+.jante-preview{width:80px;height:80px;margin:0 auto .75rem}
+.jante-name{font-size:13px;font-weight:500}
+.jante-size{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.jante-price{font-size:13px;color:var(--color-text-primary);margin-top:.5rem}
+.recap-row{display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.recap-row:last-of-type{border-bottom:none}
+.recap-label{font-size:13px;color:var(--color-text-secondary)}
+.recap-val{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.recap-edit{font-size:11px;color:var(--color-text-info);cursor:pointer;margin-left:12px}
+.total-bar{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin:1.25rem 0}
+.total-label{font-size:14px;color:var(--color-text-secondary)}
+.total-val{font-size:24px;font-weight:500;color:var(--color-text-primary)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:12px;color:var(--color-text-secondary)}
+.form-group input,.form-group select{width:100%;padding:8px 12px;font-size:14px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)}
+.checkbox-row{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--color-text-secondary);padding:.5rem 0}
+.checkbox-row input{margin-top:2px;flex-shrink:0}
+.btn-row{display:flex;gap:12px;margin-top:1.5rem;justify-content:space-between;align-items:center}
+.btn-prev{padding:8px 20px;font-size:14px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;cursor:pointer;color:var(--color-text-secondary)}
+.btn-next{padding:10px 28px;font-size:14px;font-weight:500;border:none;border-radius:var(--border-radius-md);background:#3B6D11;color:#fff;cursor:pointer;transition:background .2s}
+.btn-next:hover{background:#27500A}
+.btn-next:disabled{background:var(--color-background-secondary);color:var(--color-text-tertiary);cursor:not-allowed}
+.notice{font-size:11px;color:var(--color-text-tertiary);line-height:1.6;margin-top:1.5rem;padding-top:1rem;border-top:.5px solid var(--color-border-tertiary)}
+.payment-box{border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.5rem;background:var(--color-background-primary);margin-bottom:1.5rem}
+.payment-title{font-size:16px;font-weight:500;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px}
+.card-row{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.card-logo{padding:4px 10px;border:1px solid var(--color-border-tertiary);border-radius:6px;font-size:12px;font-weight:500;color:var(--color-text-secondary)}
+.card-logo.visa{color:#1434CB}
+.card-logo.mc{color:#EB001B}
+.card-field{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.card-field.full{grid-template-columns:1fr}
+.card-input-wrap{position:relative}
+.card-input-wrap i{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--color-text-tertiary);font-size:16px}
+.deposit-highlight{background:#EAF3DE;border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center}
+.deposit-label{font-size:13px;color:#3B6D11}
+.deposit-val{font-size:22px;font-weight:500;color:#27500A}
+.deposit-sub{font-size:11px;color:#639922;margin-top:2px}
+.success-box{text-align:center;padding:2rem 1rem}
+.success-icon{font-size:48px;margin-bottom:1rem}
+.success-title{font-size:20px;font-weight:500;margin-bottom:.75rem}
+.success-sub{font-size:14px;color:var(--color-text-secondary);line-height:1.7}
+.badge-hybrid{display:inline-block;font-size:10px;padding:2px 7px;border-radius:12px;background:#EAF3DE;color:#3B6D11;font-weight:500;vertical-align:middle;margin-left:5px}
+.section-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.5px;margin:.5rem 0 1rem}
+</style>
+
+<div class="cfg">
+  <div class="brand">
+    <svg width="120" height="22" viewBox="0 0 240 44" fill="none">
+      <text x="0" y="30" font-size="22" font-weight="700" fill="var(--color-text-primary)" font-family="var(--font-sans)">OMODA</text>
+      <text x="120" y="30" font-size="22" font-weight="300" fill="var(--color-text-secondary)" font-family="var(--font-sans)">JAECOO</text>
+    </svg>
+  </div>
+
+  <div class="steps" id="stepsBar">
+    <div class="step-pill active" data-step="0"><span class="step-num">1</span>Modèle</div>
+    <div class="step-pill" data-step="1"><span class="step-num">2</span>Motorisation</div>
+    <div class="step-pill" data-step="2"><span class="step-num">3</span>Finition</div>
+    <div class="step-pill" data-step="3"><span class="step-num">4</span>Couleur</div>
+    <div class="step-pill" data-step="4"><span class="step-num">5</span>Intérieur</div>
+    <div class="step-pill" data-step="5"><span class="step-num">6</span>Jantes</div>
+    <div class="step-pill" data-step="6"><span class="step-num">7</span>Récapitulatif</div>
+    <div class="step-pill" data-step="7"><span class="step-num">8</span>Paiement</div>
+  </div>
+
+  <!-- PAGE 1 : MODÈLE -->
+  <div class="page active" id="page-0">
+    <p class="page-title">Sélectionnez votre modèle</p>
+    <div class="grid-models" id="modelGrid"></div>
+    <div class="btn-row"><span></span><button class="btn-next" id="btn1" onclick="goTo(1)" disabled>Continuer →</button></div>
+  </div>
+
+  <!-- PAGE 2 : MOTORISATION -->
+  <div class="page" id="page-1">
+    <p class="page-title">Motorisation</p>
+    <div class="moteur-grid" id="moteurGrid"></div>
+    <div class="btn-row"><button class="btn-prev" onclick="goTo(0)">← Retour</button><button class="btn-next" id="btn2" onclick="goTo(2)" disabled>Continuer →</button></div>
+  </div>
+
+  <!-- PAGE 3 : FINITION -->
+  <div class="page" id="page-2">
+    <p class="page-title">Choisissez votre finition</p>
+    <div class="finition-grid" id="finitionGrid"></div>
+    <div class="btn-row"><button class="btn-prev" onclick="goTo(1)">← Retour</button><button class="btn-next" id="btn3" onclick="goTo(3)" disabled>Continuer →</button></div>
+  </div>
+
+  <!-- PAGE 4 : COULEUR -->
+  <div class="page" id="page-3">
+    <p class="page-title">Choisissez votre couleur</p>
+    <div class="couleur-grid" id="couleurGrid"></div>
+    <div class="btn-row"><button class="btn-prev" onclick="goTo(2)">← Retour</button><button class="btn-next" id="btn4" onclick="goTo(4)" disabled>Continuer →</button></div>
+  </div>
+
+  <!-- PAGE 5 : INTÉRIEUR -->
+  <div class="page" id="page-4">
+    <p class="page-title">Choisissez votre intérieur</p>
+    <div class="int-grid" id="intGrid"></div>
+    <div class="btn-row"><button class="btn-prev" onclick="goTo(3)">← Retour</button><button class="btn-next" id="btn5" onclick="goTo(5)" disabled>Continuer →</button></div>
+  </div>
+
+  <!-- PAGE 6 : JANTES -->
+  <div class="page" id="page-5">
+    <p class="page-title">Choisissez vos jantes</p>
+    <div class="jantes-grid" id="jantesGrid"></div>
+    <div class="btn-row"><button class="btn-prev" onclick="goTo(4)">← Retour</button><button class="btn-next" id="btn6" onclick="goTo(6)" disabled>Continuer →</button></div>
+  </div>
+
+  <!-- PAGE 7 : RÉCAPITULATIF -->
+  <div class="page" id="page-6">
+    <p class="page-title">Votre configuration</p>
+    <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:.5px solid var(--color-border-tertiary);padding:1.25rem" id="recapBox"></div>
+    <div class="total-bar">
+      <span class="total-label">Prix total TTC</span>
+      <span class="total-val" id="totalDisplay">—</span>
+    </div>
+    <div class="notice">Prix indicatif TTC au jour de la configuration. Les tarifs, équipements et spécifications peuvent évoluer sans préavis. Seul le prix confirmé par votre distributeur fait foi lors de la commande.</div>
+    <div class="btn-row"><button class="btn-prev" onclick="goTo(5)">← Retour</button><button class="btn-next" onclick="goTo(7)">Réserver → Payer l'acompte →</button></div>
+  </div>
+
+  <!-- PAGE 8 : PAIEMENT -->
+  <div class="page" id="page-7">
+    <p class="page-title">Finaliser votre réservation</p>
+
+    <div id="depositInfo" class="deposit-highlight">
+      <div>
+        <div class="deposit-label">Acompte de réservation (10%)</div>
+        <div class="deposit-sub">Le solde sera réglé chez votre concessionnaire</div>
+      </div>
+      <div style="text-align:right">
+        <div class="deposit-val" id="depositDisplay">—</div>
+        <div style="font-size:11px;color:#639922">sur <span id="totalRecap">—</span></div>
+      </div>
+    </div>
+
+    <div class="payment-box">
+      <div class="payment-title"><i class="ti ti-user" aria-hidden="true"></i>Vos coordonnées</div>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Prénom *</label><input type="text" id="f_prenom" placeholder="Jean"></div>
+        <div class="form-group"><label class="form-label">Nom *</label><input type="text" id="f_nom" placeholder="Dupont"></div>
+        <div class="form-group"><label class="form-label">E-mail *</label><input type="email" id="f_email" placeholder="jean.dupont@email.fr"></div>
+        <div class="form-group"><label class="form-label">Téléphone *</label><input type="tel" id="f_tel" placeholder="06 00 00 00 00"></div>
+        <div class="form-group full"><label class="form-label">Code postal *</label><input type="text" id="f_cp" placeholder="75001"></div>
+      </div>
+    </div>
+
+    <div class="payment-box">
+      <div class="payment-title"><i class="ti ti-credit-card" aria-hidden="true"></i>Terminal de paiement sécurisé</div>
+      <div class="card-row">
+        <span class="card-logo visa">VISA</span>
+        <span class="card-logo mc">●● Mastercard</span>
+        <span class="card-logo" style="color:#003087">PayPal</span>
+        <span class="card-logo" style="color:#555">Apple Pay</span>
+      </div>
+      <div style="border-top:.5px solid var(--color-border-tertiary);padding-top:1rem;margin-top:.5rem">
+        <div class="form-group" style="margin-bottom:10px">
+          <label class="form-label">Numéro de carte *</label>
+          <div class="card-input-wrap">
+            <input type="text" id="f_card" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtCard(this)">
+            <i class="ti ti-credit-card" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="card-field">
+          <div class="form-group">
+            <label class="form-label">Date d'expiration *</label>
+            <input type="text" id="f_exp" placeholder="MM/AA" maxlength="5" oninput="fmtExp(this)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVV *</label>
+            <input type="text" id="f_cvv" placeholder="•••" maxlength="4">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:10px">
+          <label class="form-label">Nom sur la carte *</label>
+          <input type="text" id="f_cardname" placeholder="JEAN DUPONT">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:1rem;font-size:11px;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:.75rem;border-radius:var(--border-radius-md)">
+        <i class="ti ti-lock" aria-hidden="true" style="font-size:16px;color:var(--color-text-success)"></i>
+        Paiement sécurisé SSL 256-bit. Vos données bancaires ne sont jamais stockées.
+        <span style="margin-left:auto;font-size:10px;background:#EAF3DE;color:#3B6D11;padding:2px 8px;border-radius:12px">DÉMO</span>
+      </div>
+    </div>
+
+    <div class="checkbox-row"><input type="checkbox" id="cgu"><label for="cgu">J'ai lu et j'accepte la <u style="cursor:pointer">politique de confidentialité</u> et les conditions générales de vente *</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="optin"><label for="optin">J'accepte de recevoir des communications marketing d'OMODA & JAECOO</label></div>
+
+    <div id="payError" style="color:var(--color-text-danger);font-size:12px;margin-top:.5rem;display:none">Veuillez compléter tous les champs obligatoires.</div>
+
+    <div class="btn-row">
+      <button class="btn-prev" onclick="goTo(6)">← Retour</button>
+      <button class="btn-next" onclick="submitPayment()" style="background:#3B6D11;padding:12px 32px;font-size:15px">
+        <i class="ti ti-lock" aria-hidden="true" style="margin-right:6px"></i>Confirmer l'acompte
+      </button>
+    </div>
+    <p class="notice">Terminal de paiement factice — aucune transaction réelle n'est effectuée. L'acompte de 10% est dû à la commande et confirmé par votre concessionnaire.</p>
+  </div>
+
+  <!-- PAGE SUCCÈS -->
+  <div class="page" id="page-success">
+    <div class="success-box">
+      <div class="success-icon">✅</div>
+      <p class="success-title">Réservation confirmée !</p>
+      <p class="success-sub" id="successMsg">Votre acompte a bien été enregistré. Un conseiller OMODA & JAECOO vous contactera sous 48h pour finaliser votre commande.</p>
+      <div style="margin-top:1.5rem;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem;display:inline-block;min-width:280px">
+        <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:.5rem">Référence de réservation</p>
+        <p style="font-size:20px;font-weight:500;letter-spacing:2px" id="refNum">OJ-000000</p>
+      </div>
+      <div style="margin-top:2rem">
+        <button class="btn-next" onclick="restart()" style="margin:0 auto">Nouvelle configuration</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  models:[
+    {id:'j5',brand:'JAECOO',model:'5',type:'Hybride SHS',basePrice:26990,color:'#C0202A',svgColor:'#C0202A'},
+    {id:'j7h',brand:'JAECOO',model:'7',type:'Hybride SHS',basePrice:29990,color:'#1A1A2E',svgColor:'#1A1A2E'},
+    {id:'j7p',brand:'JAECOO',model:'7',type:'Hybride Rechargeable',basePrice:35990,color:'#2C3E50',svgColor:'#2C3E50'},
+    {id:'o9',brand:'OMODA',model:'9',type:'Hybride Rechargeable',basePrice:49990,color:'#8B7355',svgColor:'#8B7355'},
+  ],
+  motorisations:{
+    j5:[{id:'m1',name:'1.5T SHS Hybride',cv:'190 ch',conso:'4.6 L/100',co2:'105 g/km',prix:0}],
+    j7h:[
+      {id:'m1',name:'1.5T SHS Hybride',cv:'190 ch',conso:'4.8 L/100',co2:'109 g/km',prix:0},
+      {id:'m2',name:'2.0T SHS Hybride',cv:'243 ch',conso:'5.1 L/100',co2:'116 g/km',prix:3000},
+    ],
+    j7p:[
+      {id:'m1',name:'1.5T SHS PHEV',cv:'258 ch',conso:'1.2 L/100',co2:'27 g/km',elec:'80 km',prix:0},
+      {id:'m2',name:'2.0T SHS PHEV+',cv:'310 ch',conso:'1.3 L/100',co2:'29 g/km',elec:'90 km',prix:4000},
+    ],
+    o9:[
+      {id:'m1',name:'2.0T SHS PHEV',cv:'280 ch',conso:'1.4 L/100',co2:'32 g/km',elec:'85 km',prix:0},
+      {id:'m2',name:'2.0T SHS PHEV AWD',cv:'340 ch',conso:'1.5 L/100',co2:'34 g/km',elec:'85 km',prix:5000},
+    ]
+  },
+  finitions:{
+    j5:[
+      {id:'active',name:'Active',prix:0,feats:['Écran 10.25"','Caméra recul','Keyless Entry','Jantes 17"']},
+      {id:'comfort',name:'Comfort',prix:2000,feats:['Écran 12.3"','Toit ouvrant','Sièges chauffants','Jantes 18"']},
+      {id:'premium',name:'Premium',prix:4500,feats:['Écran 15.6"','HUD','Son Bose','Jantes 19"']},
+    ],
+    j7h:[
+      {id:'active',name:'Active',prix:0,feats:['Écran 12.3"','Caméra 360°','Régulateur adaptatif','Jantes 18"']},
+      {id:'comfort',name:'Comfort',prix:2500,feats:['Toit panoramique','Sièges massants','Head-Up Display','Jantes 19"']},
+      {id:'premium',name:'Premium',prix:5500,feats:['Son Meridian','Toit ouvrant XL','Ambiance 64 couleurs','Jantes 20"']},
+    ],
+    j7p:[
+      {id:'active',name:'Active',prix:0,feats:['Chargeur 6.6 kW','Écran 12.3"','Charge câble Mode 3','Jantes 18"']},
+      {id:'comfort',name:'Comfort',prix:3000,feats:['Chargeur 11 kW','Toit panoramique','Sièges chauffants','Jantes 19"']},
+      {id:'premium',name:'Premium',prix:6000,feats:['Chargeur 22 kW','Son Meridian','Conduite semi-auto','Jantes 20"']},
+    ],
+    o9:[
+      {id:'luxury',name:'Luxury',prix:0,feats:['Écran 15.6"','Toit panoramique','Sièges cuir nappa','Jantes 20"']},
+      {id:'ultraluxury',name:'Ultra Luxury',prix:5000,feats:['Son Bose 17HP','Massage 4 zones','HUD AR','Jantes 21"']},
+    ]
+  },
+  couleurs:{
+    j5:[
+      {id:'blanc',name:'Blanc Khaki',hex:'#F0EDE0',prix:0,inclus:true},
+      {id:'noir',name:'Noir Minuit',hex:'#1A1A1A',prix:0,inclus:true},
+      {id:'gris',name:'Gris Acier',hex:'#8B8E8E',prix:0,inclus:true},
+      {id:'rouge',name:'Rouge Dragon',hex:'#C0202A',prix:500,inclus:false},
+      {id:'bleu',name:'Bleu Arctique',hex:'#2E5FA3',prix:500,inclus:false},
+    ],
+    j7h:[
+      {id:'blanc',name:'Blanc Khaki',hex:'#F0EDE0',prix:0,inclus:true},
+      {id:'gris',name:'Gris Météore',hex:'#6E7070',prix:0,inclus:true},
+      {id:'noir',name:'Noir Onyx',hex:'#1A1A1A',prix:0,inclus:true},
+      {id:'bleu',name:'Bleu Arctique',hex:'#2E5FA3',prix:600,inclus:false},
+      {id:'vert',name:'Vert Forêt',hex:'#3A5A40',prix:600,inclus:false},
+    ],
+    j7p:[
+      {id:'blanc',name:'Blanc Nacré',hex:'#F5F3EE',prix:0,inclus:true},
+      {id:'gris',name:'Gris Titane',hex:'#74787A',prix:0,inclus:true},
+      {id:'noir',name:'Noir Cosmos',hex:'#141414',prix:0,inclus:true},
+      {id:'rouge',name:'Rouge Cerise',hex:'#9B1B30',prix:700,inclus:false},
+      {id:'or',name:'Or Sablé',hex:'#C8A96E',prix:900,inclus:false},
+    ],
+    o9:[
+      {id:'blanc',name:'Blanc Cristal',hex:'#F7F6F2',prix:0,inclus:true},
+      {id:'gris',name:'Gris Lunaire',hex:'#9BA0A2',prix:0,inclus:true},
+      {id:'noir',name:'Noir Abyssal',hex:'#111111',prix:0,inclus:true},
+      {id:'or',name:'Or Champagne',hex:'#C4A35A',prix:1200,inclus:false},
+      {id:'brun',name:'Brun Cachemire',hex:'#7D5A3C',prix:1200,inclus:false},
+    ]
+  },
+  interieurs:[
+    {id:'noir',name:'Noir',sub:'Tissu technique',preview:'#1A1A1A',prix:0},
+    {id:'gris_mix',name:'Gris biton',sub:'Alcantara & cuir',preview:'#5A5A5A',prix:800},
+    {id:'beige',name:'Beige Luxe',preview:'#C9B99A',sub:'Cuir nappa pleine fleur',prix:1500},
+    {id:'marron',name:'Marron Cognac',preview:'#6B3B1E',sub:'Cuir nappa coutures',prix:1800},
+  ],
+  jantes:[
+    {id:'j17',name:'Classique 5 branches',size:'17 pouces',prix:0},
+    {id:'j18',name:'Étoile 10 branches',size:'18 pouces',prix:600},
+    {id:'j19',name:'Diamant biton',size:'19 pouces',prix:1200},
+    {id:'j20',name:'Turbine sport',size:'20 pouces',prix:2000},
+    {id:'j21',name:'Blade Premium',size:'21 pouces',prix:2800},
+  ]
+};
+
+let sel={model:null,motorisation:null,finition:null,couleur:null,interieur:null,jante:null};
+let currentPage=0;
+
+function carSVG(color,model){
+  return `<svg class="car-svg" viewBox="0 0 120 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="5" y="20" width="110" height="22" rx="4" fill="${color}" opacity=".15"/>
+    <path d="M15 42 Q15 28 25 22 L40 16 Q55 12 65 12 Q80 12 90 16 L105 22 Q110 26 110 34 L110 42 Z" fill="${color}"/>
+    <path d="M38 22 L45 13 Q56 10 65 10 Q74 10 80 13 L88 22 Z" fill="${color}" opacity=".7"/>
+    <rect x="10" y="38" width="18" height="5" rx="2.5" fill="#111" opacity=".8"/>
+    <rect x="92" y="38" width="18" height="5" rx="2.5" fill="#111" opacity=".8"/>
+    <circle cx="24" cy="44" r="7" fill="#222"/><circle cx="24" cy="44" r="4" fill="#555"/>
+    <circle cx="96" cy="44" r="7" fill="#222"/><circle cx="96" cy="44" r="4" fill="#555"/>
+    <path d="M42 22 L50 15 L75 15 L83 22" fill="none" stroke="#fff" stroke-width=".8" opacity=".5"/>
+  </svg>`;
+}
+
+function wheelSVG(id,size){
+  const spokes={j17:5,j18:10,j19:8,j20:6,j21:12}[id]||6;
+  const r=34,cx=40,cy=40;
+  let paths='';
+  for(let i=0;i<spokes;i++){
+    const a=i*360/spokes,ar=a*Math.PI/180;
+    const x2=cx+r*0.95*Math.sin(ar),y2=cy-r*0.95*Math.cos(ar);
+    const x1=cx+8*Math.sin(ar),y1=cy-8*Math.cos(ar);
+    paths+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#888" stroke-width="3.5" stroke-linecap="round"/>`;
+  }
+  return `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="width:72px;height:72px">
+    <circle cx="40" cy="40" r="36" fill="#2A2A2A" stroke="#444" stroke-width="1"/>
+    <circle cx="40" cy="40" r="28" fill="#1A1A1A"/>
+    ${paths}
+    <circle cx="40" cy="40" r="6" fill="#666"/>
+    <circle cx="40" cy="40" r="3" fill="#999"/>
+  </svg>`;
+}
+
+function renderModels(){
+  const g=document.getElementById('modelGrid');
+  g.innerHTML=DATA.models.map(m=>`
+    <div class="model-card" id="mc_${m.id}" onclick="selectModel('${m.id}')">
+      <div class="model-img-placeholder">${carSVG(m.svgColor,m.model)}</div>
+      <div class="model-name">${m.brand} ${m.model}<span class="badge-hybrid">${m.type.includes('Rechargeable')?'PHEV':'HEV'}</span></div>
+      <div class="model-type">${m.type}</div>
+      <div class="model-price">À partir de ${m.basePrice.toLocaleString('fr-FR')} € <span>TTC</span></div>
+    </div>`).join('');
+}
+
+function selectModel(id){
+  sel={model:id,motorisation:null,finition:null,couleur:null,interieur:null,jante:null};
+  document.querySelectorAll('.model-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('mc_'+id).classList.add('selected');
+  document.getElementById('btn1').disabled=false;
+}
+
+function renderMotorisations(){
+  const g=document.getElementById('moteurGrid');
+  const m=DATA.motorisations[sel.model]||[];
+  const base=DATA.models.find(x=>x.id===sel.model);
+  g.innerHTML=m.map(mo=>`
+    <div class="moteur-card" id="mo_${mo.id}" onclick="selectMoteur('${mo.id}')">
+      <div>
+        <div class="moteur-name">${mo.name}</div>
+        <div class="moteur-sub">${mo.cv}</div>
+        <div class="moteur-specs">
+          <div class="spec"><strong>${mo.conso}</strong> mixte</div>
+          <div class="spec"><strong>${mo.co2}</strong> CO₂</div>
+          ${mo.elec?`<div class="spec"><strong>${mo.elec}</strong> électrique</div>`:''}
+        </div>
+      </div>
+      <div class="moteur-price">${mo.prix===0?'Inclus':'+ '+mo.prix.toLocaleString('fr-FR')+' €'}</div>
+    </div>`).join('');
+  document.getElementById('btn2').disabled=true;
+}
+
+function selectMoteur(id){
+  sel.motorisation=id;
+  document.querySelectorAll('.moteur-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('mo_'+id).classList.add('selected');
+  document.getElementById('btn2').disabled=false;
+}
+
+function renderFinitions(){
+  const g=document.getElementById('finitionGrid');
+  const f=DATA.finitions[sel.model]||[];
+  g.innerHTML=f.map(fi=>`
+    <div class="finition-card" id="fi_${fi.id}" onclick="selectFinition('${fi.id}')">
+      <div class="finition-name">${fi.name}</div>
+      <div class="finition-price">${fi.prix===0?'Inclus':'+ '+fi.prix.toLocaleString('fr-FR')+' €'}</div>
+      <div class="finition-features">${fi.feats.map(f=>`<span class="feat"><i class="ti ti-check" aria-hidden="true" style="font-size:12px;color:#3B6D11"></i>${f}</span>`).join('')}</div>
+    </div>`).join('');
+  document.getElementById('btn3').disabled=true;
+}
+
+function selectFinition(id){
+  sel.finition=id;
+  document.querySelectorAll('.finition-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('fi_'+id).classList.add('selected');
+  document.getElementById('btn3').disabled=false;
+}
+
+function renderCouleurs(){
+  const g=document.getElementById('couleurGrid');
+  const c=DATA.couleurs[sel.model]||[];
+  g.innerHTML=c.map(co=>`
+    <div class="couleur-item" id="co_${co.id}" onclick="selectCouleur('${co.id}')">
+      <div class="couleur-circle" style="background:${co.hex}"></div>
+      <div class="couleur-label">${co.name}</div>
+      <div class="couleur-badge">${co.inclus?'Inclus':'+ '+co.prix+' €'}</div>
+    </div>`).join('');
+  document.getElementById('btn4').disabled=true;
+}
+
+function selectCouleur(id){
+  sel.couleur=id;
+  document.querySelectorAll('.couleur-item').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('co_'+id).classList.add('selected');
+  document.getElementById('btn4').disabled=false;
+}
+
+function renderInterieurs(){
+  const g=document.getElementById('intGrid');
+  g.innerHTML=DATA.interieurs.map(i=>`
+    <div class="int-card" id="in_${i.id}" onclick="selectInterieur('${i.id}')">
+      <div class="int-preview" style="background:${i.preview}"></div>
+      <div class="int-name">${i.name}</div>
+      <div class="int-sub">${i.sub}</div>
+      <div style="font-size:13px;margin-top:.5rem;color:var(--color-text-primary)">${i.prix===0?'De série — Inclus':'+ '+i.prix.toLocaleString('fr-FR')+' €'}</div>
+    </div>`).join('');
+  document.getElementById('btn5').disabled=true;
+}
+
+function selectInterieur(id){
+  sel.interieur=id;
+  document.querySelectorAll('.int-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('in_'+id).classList.add('selected');
+  document.getElementById('btn5').disabled=false;
+}
+
+function renderJantes(){
+  const g=document.getElementById('jantesGrid');
+  g.innerHTML=DATA.jantes.map(j=>`
+    <div class="jante-card" id="ja_${j.id}" onclick="selectJante('${j.id}')">
+      <div class="jante-preview">${wheelSVG(j.id,j.size)}</div>
+      <div class="jante-name">${j.name}</div>
+      <div class="jante-size">${j.size}</div>
+      <div class="jante-price">${j.prix===0?'Inclus':'+ '+j.prix.toLocaleString('fr-FR')+' €'}</div>
+    </div>`).join('');
+  document.getElementById('btn6').disabled=true;
+}
+
+function selectJante(id){
+  sel.jante=id;
+  document.querySelectorAll('.jante-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('ja_'+id).classList.add('selected');
+  document.getElementById('btn6').disabled=false;
+}
+
+function calcTotal(){
+  const model=DATA.models.find(m=>m.id===sel.model);
+  if(!model)return 0;
+  const moteur=(DATA.motorisations[sel.model]||[]).find(m=>m.id===sel.motorisation);
+  const finition=(DATA.finitions[sel.model]||[]).find(f=>f.id===sel.finition);
+  const couleur=(DATA.couleurs[sel.model]||[]).find(c=>c.id===sel.couleur);
+  const interieur=DATA.interieurs.find(i=>i.id===sel.interieur);
+  const jante=DATA.jantes.find(j=>j.id===sel.jante);
+  return model.basePrice+(moteur?.prix||0)+(finition?.prix||0)+(couleur?.prix||0)+(interieur?.prix||0)+(jante?.prix||0);
+}
+
+function renderRecap(){
+  const model=DATA.models.find(m=>m.id===sel.model);
+  const moteur=(DATA.motorisations[sel.model]||[]).find(m=>m.id===sel.motorisation);
+  const finition=(DATA.finitions[sel.model]||[]).find(f=>f.id===sel.finition);
+  const couleur=(DATA.couleurs[sel.model]||[]).find(c=>c.id===sel.couleur);
+  const interieur=DATA.interieurs.find(i=>i.id===sel.interieur);
+  const jante=DATA.jantes.find(j=>j.id===sel.jante);
+  const total=calcTotal();
+
+  const rows=[
+    {l:'Modèle',v:`${model.brand} ${model.model} — ${model.type}`,step:0,p:model.basePrice},
+    {l:'Motorisation',v:moteur?.name,step:1,p:moteur?.prix},
+    {l:'Finition',v:finition?.name,step:2,p:finition?.prix},
+    {l:'Couleur',v:couleur?.name,step:3,p:couleur?.prix},
+    {l:'Intérieur',v:interieur?.name,step:4,p:interieur?.prix},
+    {l:'Jantes',v:jante?.name+' '+jante?.size,step:5,p:jante?.prix},
+  ];
+
+  document.getElementById('recapBox').innerHTML=rows.map(r=>`
+    <div class="recap-row">
+      <div>
+        <div class="recap-label">${r.l}</div>
+        <div class="recap-val">${r.v||'—'}</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <span style="font-size:13px;color:var(--color-text-secondary)">${r.p===0?'Inclus':r.p?'+'+r.p.toLocaleString('fr-FR')+' €':''}</span>
+        <span class="recap-edit" onclick="goTo(${r.step})">Modifier</span>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('totalDisplay').textContent=total.toLocaleString('fr-FR')+' €';
+}
+
+function renderPayment(){
+  const total=calcTotal();
+  const deposit=Math.round(total*0.1);
+  document.getElementById('depositDisplay').textContent=deposit.toLocaleString('fr-FR')+' €';
+  document.getElementById('totalRecap').textContent=total.toLocaleString('fr-FR')+' €';
+}
+
+function goTo(n){
+  document.querySelectorAll('.page').forEach((p,i)=>{
+    p.classList.toggle('active',i===n);
+  });
+  document.querySelectorAll('.step-pill').forEach((p,i)=>{
+    p.classList.remove('active','done');
+    if(i===n)p.classList.add('active');
+    else if(i<n)p.classList.add('done');
+  });
+  currentPage=n;
+  if(n===1)renderMotorisations();
+  if(n===2)renderFinitions();
+  if(n===3)renderCouleurs();
+  if(n===4)renderInterieurs();
+  if(n===5)renderJantes();
+  if(n===6)renderRecap();
+  if(n===7)renderPayment();
+  document.querySelector('.cfg').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function fmtCard(el){
+  let v=el.value.replace(/\D/g,'');
+  el.value=v.replace(/(.{4})/g,'$1 ').trim().substring(0,19);
+}
+function fmtExp(el){
+  let v=el.value.replace(/\D/g,'');
+  if(v.length>=2)v=v.substring(0,2)+'/'+v.substring(2);
+  el.value=v;
+}
+
+function submitPayment(){
+  const fields=['f_prenom','f_nom','f_email','f_tel','f_cp','f_card','f_exp','f_cvv','f_cardname'];
+  const ok=fields.every(id=>document.getElementById(id).value.trim().length>2);
+  const cgu=document.getElementById('cgu').checked;
+  if(!ok||!cgu){document.getElementById('payError').style.display='block';return;}
+  document.getElementById('payError').style.display='none';
+  const model=DATA.models.find(m=>m.id===sel.model);
+  const total=calcTotal();
+  const deposit=Math.round(total*0.1);
+  const ref='OJ-'+Math.floor(100000+Math.random()*900000);
+  const prenom=document.getElementById('f_prenom').value;
+  document.getElementById('refNum').textContent=ref;
+  document.getElementById('successMsg').innerHTML=`Bonjour <strong>${prenom}</strong>, votre acompte de <strong>${deposit.toLocaleString('fr-FR')} €</strong> pour le <strong>${model.brand} ${model.model}</strong> a bien été enregistré.<br><br>Un conseiller vous contactera sous 48h pour finaliser votre commande.`;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-success').classList.add('active');
+}
+
+function restart(){
+  sel={model:null,motorisation:null,finition:null,couleur:null,interieur:null,jante:null};
+  document.querySelectorAll('.page').forEach((p,i)=>{p.classList.toggle('active',i===0)});
+  document.querySelectorAll('.step-pill').forEach((p,i)=>{p.classList.remove('active','done');if(i===0)p.classList.add('active')});
+  document.querySelectorAll('.model-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('btn1').disabled=true;
+}
+
+renderModels();
+</script>
